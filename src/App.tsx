@@ -62,7 +62,6 @@ function App() {
         },
         'html, body': {
           width: '400px',
-          maxHeight: '500px',
           margin: 0,
           padding: 0,
         },

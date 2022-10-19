@@ -1,0 +1,2 @@
+!function(){"use strict";chrome.runtime.onMessage.addListener((function(e,t,n){var r=Array.from(document.getElementsByTagName("h1")).map((function(e){return e.innerText}));n({title:document.title,headlines:r})}))}();
+//# sourceMappingURL=content.js.map
