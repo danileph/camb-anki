@@ -8,6 +8,7 @@ interface IButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   size?: 'large' | 'small' | 'medium',
   outline?: boolean,
   fullWidth?: boolean,
+  link?: boolean,
 };
 
 const styles = {
@@ -59,10 +60,17 @@ const styles = {
     fullWidth: css({
       display: 'block',
     }),
+    link: css({
+      background: 'none',
+      padding: '0',
+      '&:hover': {
+        background: 'none',
+      }
+    }),
   }
 }
 
-const Button: FC<IButtonProps> = ({ children, css, size = 'large', outline = false, fullWidth = false, ...other }) => {
+const Button: FC<IButtonProps> = ({ link = false, children, css, size = 'large', outline = false, fullWidth = false, ...other }) => {
   return (
     <button
       css={[
@@ -70,6 +78,7 @@ const Button: FC<IButtonProps> = ({ children, css, size = 'large', outline = fal
         styles.root[size],
         outline && styles.root.outline,
         fullWidth && styles.root.fullWidth,
+        link && styles.root.link,
         css,
       ]}
       {...other}

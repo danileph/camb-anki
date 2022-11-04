@@ -36,20 +36,21 @@ const styles = {
   pronouceBlock: {
     base: css({
       display: 'flex',
-      '> :last-child': {
-        marginLeft: '10px',
+      '> :first-child': {
+        marginRight: '10px',
       }
     })
   }
 }
 
 const Word: FC<IWordProps> = ({ partOfSpeech, pronounce, children }) => {
+  console.log(pronounce)
   return (
     <div>
       <Typography type='h1' css={styles.word.base} ><Label label={partOfSpeech}>{children}</Label></Typography>
       <div css={styles.pronouceBlock.base}>
-        <Pronounce country='US'>{pronounce?.us?.transcription}</Pronounce>
-        <Pronounce country='UK'>{pronounce?.uk?.transcription}</Pronounce>
+        {pronounce?.us?.transcription && pronounce?.us?.audio ? <Pronounce country='US' audio={pronounce.us.audio}>{pronounce?.us?.transcription}</Pronounce> : null}
+        {pronounce?.uk?.transcription && pronounce?.uk?.audio ? <Pronounce country='UK' audio={pronounce.uk.audio}>{pronounce?.uk?.transcription}</Pronounce> : null}
       </div>
     </div>
   )

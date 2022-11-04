@@ -1,7 +1,7 @@
-import { AboutPage } from "components/pages/AboutPage";
-import { AddPage } from "components/pages/AddPage";
-import { SearchPage } from "components/pages/SearchPage";
-import { SettingsPage } from "components/pages/SettingsPage";
+import { AboutPage } from "pages/AboutPage";
+import { AddPage } from "pages/AddPage";
+import { SearchPage } from "pages/SearchPage";
+import { SettingsPage } from "pages/SettingsPage";
 import React from "react";
 import { CurrentTabType } from "store/currentTab";
 

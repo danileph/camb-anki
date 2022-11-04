@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { FC } from 'react';
-import { ReactComponent as IconAudio } from 'assets/icons/audio.svg';
 import { css } from '@emotion/react';
 import Typography from 'components/UI/Typography/Typography';
+import { Audio } from 'components/Audio';
 
 interface IPronounceProps extends React.HTMLAttributes<HTMLDivElement> {
-  country?: 'UK' | 'US',
-  audio?: string,
+  country: 'UK' | 'US',
+  audio: string,
 };
 
 const styles = {
@@ -14,8 +14,8 @@ const styles = {
     base: css({
       display: 'flex',
       alignItems: 'center',
-      '> :last-child': {
-        marginLeft: '10px',
+      '> :first-child': {
+        marginRight: '10px',
       },
       '*': {
         marginTop: 0,
@@ -28,8 +28,8 @@ const styles = {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      '> :last-child': {
-        marginLeft: '5px'
+      '& > :first-child': {
+        marginRight: '5px'
       }
     })
   },
@@ -47,14 +47,14 @@ const styles = {
   }
 }
 
-const Pronounce: FC<IPronounceProps> = ({ children, country = 'UK' }) => {
+const Pronounce: FC<IPronounceProps> = ({ children, country = 'UK', audio }) => {
   return (
     <div css={styles.root.base}>
       <div css={styles.audio.base}>
         <Typography css={styles.countryCaption.base}>{country}</Typography>
-        <IconAudio />
+        <Audio audioSrc={audio}/>
       </div>
-      <Typography css={styles.transcripiton.base}>{children}</Typography>
+      <Typography css={styles.transcripiton.base}>{`[${children}]`}</Typography>
     </div>
   )
 };
