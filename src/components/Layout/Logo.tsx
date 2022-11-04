@@ -4,7 +4,7 @@ import { FC } from 'react';
 import { theme } from 'utils/theme';
 import { ReactComponent as LogoIcon } from 'assets/icons/Logo.svg'
 import { useRecoilState } from 'recoil';
-import { isSearchingState } from 'store/atoms/isSearchingState';
+import { isSearchingState } from 'store/isSearching';
 import { BounceLoader } from 'react-spinners';
 
 interface ILogoProps extends React.HTMLAttributes<HTMLDivElement> {

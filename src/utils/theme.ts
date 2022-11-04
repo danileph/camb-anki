@@ -14,6 +14,7 @@ export const theme = {
     },
     background: '#F0E9DC',
   },
+  transition: 'all 0.2s ease',
 
 }
 

@@ -1,8 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Search } from 'components/Search';
+import { Tab } from 'components/Tab';
 import { relative } from 'node:path/win32';
 import { FC } from 'react';
+import { useRecoilState } from 'recoil';
+import { currentTabSelector } from 'store/currentTab';
+import { ALL_TABS } from 'utils/tabs';
 import { theme } from 'utils/theme';
 import Logo from './Logo';
 import Titles from './Titles';
@@ -65,18 +69,41 @@ const styles = {
     marginLeft: 80,
     marginBottom: 5,
     alignSelf: 'stretch',
+  }),
+  tabGroup: css({
+    marginLeft: 120,
+    marginBottom: -10,
   })
 }
 
 const Header: FC<IHeaderProps> = ({ scrollTop, ...other }) => {
+  const [currentTab, setCurrentTab] = useRecoilState(currentTabSelector);
   const isCompacted = scrollTop !== undefined && scrollTop > 24;
   const isExtraCompacted = scrollTop !== undefined && scrollTop > 155;
 
   return (
     <header css={[styles.base, isCompacted && styles.compacted]} {...other}>
       <Logo css={[isCompacted && styles.logo]} shrincted={isCompacted}/>
-      <Titles css={[isCompacted && styles.titlesPre, isExtraCompacted && styles.titles,]} />
-      {isExtraCompacted && <Search small css={[styles.search]} />}
+      <Titles css={[isCompacted && styles.titlesPre, isExtraCompacted && currentTab === 'search' && styles.titles,]} />
+      {isExtraCompacted && currentTab === 'search' && <Search small css={[styles.search]} />}
+      {!isCompacted && (
+        <Tab.Group
+          css={[
+            styles.tabGroup
+          ]}
+        >
+          {ALL_TABS.map((tab) => (
+            <Tab 
+              tabId={tab.tabId} 
+              setCurrentTab={setCurrentTab} 
+              currentTab={currentTab}
+              key={tab.tabId}
+            >
+              {tab.tabName}
+            </Tab>
+          ))}
+        </Tab.Group>
+      )}
     </header>
   )
 };

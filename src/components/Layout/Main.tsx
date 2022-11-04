@@ -2,8 +2,8 @@
 import { css } from '@emotion/react';
 import { FC, Ref, useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { searchErrorState } from 'store/atoms/searchErrorState';
-import { wordDataState } from 'store/atoms/wordDataState';
+import { searchErrorState } from 'store/searchError';
+import { wordDataState } from 'store/wordData';
 import { theme } from 'utils/theme';
 
 interface IMainProps extends React.HTMLAttributes<HTMLDivElement> {

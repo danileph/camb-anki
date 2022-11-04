@@ -10,10 +10,10 @@ import { PulseLoader } from 'react-spinners';
 import { useRecoilState } from 'recoil';
 import { searchWord } from 'services/cambParser';
 import { SearchWordType } from 'services/cambParser/searchWord';
-import { isSearchingState } from 'store/atoms/isSearchingState';
-import { searchErrorState } from 'store/atoms/searchErrorState';
-import { searchingWordState } from 'store/atoms/searchingWordState';
-import { wordDataState } from 'store/atoms/wordDataState';
+import { isSearchingState } from 'store/isSearching';
+import { searchErrorState } from 'store/searchError';
+import { searchingWordState } from 'store/searchingWord';
+import { wordDataState } from 'store/wordData';
 import { theme } from 'utils/theme';
 
 interface ISearchProps extends React.HTMLAttributes<HTMLElement> {

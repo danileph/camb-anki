@@ -10,16 +10,26 @@ import Space from 'components/UI/Space/Space';
 import { WordBlock } from 'components/WordBlock';
 import { Search } from 'components/Search';
 import { useRecoilState } from 'recoil';
-import { searchingWordState } from 'store/atoms/searchingWordState';
-import { wordDataState } from 'store/atoms/wordDataState';
-import { searchErrorState } from 'store/atoms/searchErrorState';
+import { searchingWordState } from 'store/searchingWord';
+import { wordDataState } from 'store/wordData';
+import { searchErrorState } from 'store/searchError';
 import Typography from 'components/UI/Typography/Typography';
+import { Tab } from 'components/Tab';
+import { ALL_TABS } from 'utils/tabs';
+import { currentTabSelector, CURRENT_TAB } from 'store/currentTab';
 
 function App() {
-  const [title, setTitle] = React.useState('');
-  const [headlines, setHeadlines] = React.useState<string[]>([]);
-  const [ wordData ] = useRecoilState(wordDataState);
-  const [ searchError ] = useRecoilState(searchErrorState);
+  const [title, setTitle] = useState('');
+  const [headlines, setHeadlines] = useState<string[]>([]);
+  const [currentTab, setCurrnetTab] = useRecoilState(currentTabSelector);
+
+  useEffect(() => {
+    if (chrome.storage) {
+      chrome.storage.sync.get([CURRENT_TAB], (res) => {
+        setCurrnetTab(res[CURRENT_TAB])
+      })
+    }
+  }, [])
 
   React.useEffect(() => {
     /**
@@ -92,38 +102,10 @@ function App() {
           backgroundColor: theme.palette.primary.darkest,
         }
       }} />
-      <Search />
-      {searchError && (
-        <Typography type='h1'>
-          {'Oops... Not found :('}
-        </Typography>
-      )}
-      {wordData?.map((word) => (
-        <WordBlock>
-          <WordBlock.Header>
-            <WordBlock.Header.Word 
-              partOfSpeech={word.partOfspeech} 
-              pronounce={{uk: word.uk, us: word.us}}
-            >
-              {word.word}
-            </WordBlock.Header.Word>
-            {word.useCases.map((useCase) => (
-              useCase.definition.map((definition) => (
-                <WordBlock.DefinitionBlock
-                  useCase={useCase.content}
-                  level={definition.lvl}
-                >
-                  <WordBlock.DefinitionBlock.Definition>
-                    {definition.content}
-                  </WordBlock.DefinitionBlock.Definition>
-                  <WordBlock.DefinitionBlock.Example>
-                    {definition.examples}
-                  </WordBlock.DefinitionBlock.Example>
-                </WordBlock.DefinitionBlock>
-              ))
-            ))}
-          </WordBlock.Header>
-        </WordBlock>
+      {ALL_TABS.map((tab) => (
+        <Tab.Body tabId={tab.tabId} currentTab={currentTab} >
+          {tab.page}
+        </Tab.Body>
       ))}
     </Layout>
   );

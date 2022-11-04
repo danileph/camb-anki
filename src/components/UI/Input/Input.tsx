@@ -3,9 +3,10 @@ import { css } from '@emotion/react';
 import { FC, useState } from 'react';
 import { theme } from 'utils/theme';
 import Label from './Label';
+import TextArea from './TextArea';
 
 
-const styles = {
+export const styles = {
   base: css({
     boxShadow: '0px 0px 4px 0px rgba(34, 60, 80, 0.2) inset',
     background: theme.palette.secondary.darker,
@@ -13,7 +14,7 @@ const styles = {
     display: 'block',
     position: 'relative',
     zIndex: 1,
-    'input': {
+    'input, .multy-input': {
       width: '100%',
       height: '100%',
       borderRadius: '12px',
@@ -69,7 +70,11 @@ interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement>{
   sizing?: 'large' | 'medium',
 };
 
-const Input: FC<IInputProps> = ({ sizing = 'large', icon, placeholder = '', withLabel = true, css = {}, className, value, ...other }) => {
+interface IInputComposition {
+  TextArea: typeof TextArea;
+}
+
+const Input: FC<IInputProps> & IInputComposition = ({ sizing = 'large', icon, placeholder = '', withLabel = true, css = {}, className, value = '', ...other }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -82,24 +87,26 @@ const Input: FC<IInputProps> = ({ sizing = 'large', icon, placeholder = '', with
     className={className}
    >
     {icon != null && icon}
-    {placeholder != '' && (
+    {placeholder !== '' && (
       <Label isLabel={isFocused || value !== ''} placeholderOnly={!withLabel} >{placeholder}</Label>
     )}
-     <input
-      css={[
-        withLabel ? styles.inputWithLabel : styles.inputWithoutLabel,
-        styles.placeholder.base,
-        sizing === 'medium' && styles.placeholder.medium,
-      ]}
-      placeholder={!withLabel ? placeholder : undefined}
-      type="text"
-      onFocus={() => {setIsFocused(true)}}
-      onBlur={() => {setIsFocused(false)}}
-      value={value}
-      {...other}
+      <input
+        css={[
+          withLabel ? styles.inputWithLabel : styles.inputWithoutLabel,
+          styles.placeholder.base,
+          sizing === 'medium' && styles.placeholder.medium,
+        ]}
+        placeholder={!withLabel ? placeholder : undefined}
+        type="text"
+        onFocus={() => {setIsFocused(true)}}
+        onBlur={() => {setIsFocused(false)}}
+        value={value}
+        {...other}
     />
    </div>
   )
 };
+
+Input.TextArea = TextArea;
 
 export default Input;
