@@ -74,7 +74,7 @@ interface IInputComposition {
   TextArea: typeof TextArea;
 }
 
-const Input: FC<IInputProps> & IInputComposition = ({ sizing = 'large', icon, placeholder = '', withLabel = true, css = {}, className, value = '', ...other }) => {
+const Input: FC<IInputProps> & IInputComposition = ({ sizing = 'large', icon, placeholder = '', withLabel = true, css = {}, className, value = '', onFocus = () => {}, onBlur = () => {}, ...other }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -98,8 +98,8 @@ const Input: FC<IInputProps> & IInputComposition = ({ sizing = 'large', icon, pl
         ]}
         placeholder={!withLabel ? placeholder : undefined}
         type="text"
-        onFocus={() => {setIsFocused(true)}}
-        onBlur={() => {setIsFocused(false)}}
+        onFocus={(e) => {setIsFocused(true); onFocus(e)}}
+        onBlur={(e) => {setIsFocused(false); onBlur(e)}}
         value={value}
         {...other}
     />
