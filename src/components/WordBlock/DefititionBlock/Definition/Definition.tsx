@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import Typography from 'components/UI/Typography/Typography';
-import { FC } from 'react';
+import { FC, useContext } from 'react';
+import { ContextDefinition } from '../DefinitionBlock';
 
-interface IDefinitionProps  extends React.HTMLAttributes<HTMLDivElement> {
-
+interface IDefinitionProps  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  children: string,
 };
 
 const styles = {
@@ -17,6 +18,9 @@ const styles = {
 }
 
 const Definition: FC<IDefinitionProps> = ({ children }) => {
+  const context = useContext(ContextDefinition);
+  context?.definition.set(children);
+
   return (
     <Typography css={styles.root.base}>
       {children}

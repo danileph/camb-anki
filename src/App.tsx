@@ -17,45 +17,59 @@ import Typography from 'components/UI/Typography/Typography';
 import { Tab } from 'components/Tab';
 import { ALL_TABS } from 'utils/tabs';
 import { currentTabSelector, CURRENT_TAB } from 'store/currentTab';
+import { ankiFieldsSelector, ANKI_FIELDS } from 'store/ankiFields';
 
 function App() {
   const [title, setTitle] = useState('');
   const [headlines, setHeadlines] = useState<string[]>([]);
   const [currentTab, setCurrnetTab] = useRecoilState(currentTabSelector);
+  const [ ankiFields, setAnkiFields ] = useRecoilState(ankiFieldsSelector);
 
   useEffect(() => {
     if (chrome.storage) {
-      chrome.storage.sync.get([CURRENT_TAB], (res) => {
-        setCurrnetTab(res[CURRENT_TAB])
+      chrome.storage.sync.get([CURRENT_TAB, ANKI_FIELDS], (res) => {
+        // setCurrnetTab(res[CURRENT_TAB]);
+        console.log(JSON.parse(res[ANKI_FIELDS]));
+        setAnkiFields(JSON.parse(res[ANKI_FIELDS]));
       })
     }
   }, [])
 
-  React.useEffect(() => {
-    /**
-     * We can't use "chrome.runtime.sendMessage" for sending messages from React.
-     * For sending messages from React we need to specify which tab to send it to.
-     */
-    chrome.tabs && chrome.tabs.query({
-      active: true,
-      currentWindow: true
-    }, tabs => {
-      /**
-       * Sends a single message to the content script(s) in the specified tab,
-       * with an optional callback to run when a response is sent back.
-       *
-       * The runtime.onMessage event is fired in each content script running
-       * in the specified tab for the current extension.
-       */
-      chrome.tabs.sendMessage(
-        tabs[0].id || 0,
-        { type: 'GET_DOM' } as DOMMessage,
-        (response: DOMMessageResponse) => {
-          setTitle(response.title);
-          setHeadlines(response.headlines);
-        });
-    });
-  });
+  useEffect(() => {
+    if (ankiFields.length === 0) {
+      setAnkiFields([
+        {name: 'Word', value: undefined},
+        {name: 'Meaning', value: undefined},
+        {name: 'Example', value: undefined},
+      ])
+    }
+  }, [])
+
+  // React.useEffect(() => {
+  //   /**
+  //    * We can't use "chrome.runtime.sendMessage" for sending messages from React.
+  //    * For sending messages from React we need to specify which tab to send it to.
+  //    */
+  //   chrome.tabs && chrome.tabs.query({
+  //     active: true,
+  //     currentWindow: true
+  //   }, tabs => {
+  //     /**
+  //      * Sends a single message to the content script(s) in the specified tab,
+  //      * with an optional callback to run when a response is sent back.
+  //      *
+  //      * The runtime.onMessage event is fired in each content script running
+  //      * in the specified tab for the current extension.
+  //      */
+  //     chrome.tabs.sendMessage(
+  //       tabs[0].id || 0,
+  //       { type: 'GET_DOM' } as DOMMessage,
+  //       (response: DOMMessageResponse) => {
+  //         setTitle(response.title);
+  //         setHeadlines(response.headlines);
+  //       });
+  //   });
+  // });
 
   return (
     <Layout>

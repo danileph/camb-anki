@@ -1,4 +1,5 @@
 import { Search } from 'components/Search';
+import { Checkbox } from 'components/UI/Checkbox';
 import Typography from 'components/UI/Typography/Typography';
 import { WordBlock } from 'components/WordBlock';
 import { FC, useState } from 'react';
@@ -37,6 +38,7 @@ const SearchPage: FC<ISearchPageProps> = () => {
                 <WordBlock.DefinitionBlock
                   useCase={useCase.content}
                   level={definition.lvl}
+                  word={word.word}
                 >
                   <WordBlock.DefinitionBlock.Definition>
                     {definition.content}

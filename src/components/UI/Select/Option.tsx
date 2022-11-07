@@ -15,18 +15,18 @@ const styles = {
       padding: '8px 15px',
       borderRadius: '12px',
       cursor: 'pointer',
-      '&:hover': {
-        background: theme.palette.primary.lighter,
-        color: theme.palette.secondary.normal,
-      }
+      // '&:hover': {
+      //   background: theme.palette.primary.lighter,
+      //   color: theme.palette.secondary.normal,
+      // }
     }),
     checked: css({
       background: theme.palette.primary.lightest,
       color: theme.palette.secondary.normal,
-      '&:hover': {
-        background: theme.palette.primary.lightest,
-        color: theme.palette.secondary.normal,
-      }
+      // '&:hover': {
+      //   background: theme.palette.primary.lightest,
+      //   color: theme.palette.secondary.normal,
+      // }
     })
   }
 }

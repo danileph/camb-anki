@@ -4,7 +4,11 @@ import { ContentEditable } from 'components/ContentEditable';
 import Button from 'components/UI/Button/Button';
 import { Input } from 'components/UI/Input';
 import { Select } from 'components/UI/Select';
-import React, { FC, ReactNode, useState } from 'react';
+import React, { FC, ReactNode, useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { currentTabSelector } from 'store/currentTab';
+import { ankiFieldsSelector } from 'store/ankiFields';
+import { ALL_TABS } from 'utils/tabs';
 import { theme } from 'utils/theme';
 
 interface IAddPageProps {
@@ -56,18 +60,11 @@ const styles = {
 }
 
 const AddPage: FC<IAddPageProps> = () => {
-  const [word, setWord] = useState<string[]>();
-  const [meaning, setMeaning] = useState<string[]>();
-  const [example, setExample] = useState<string[]>();
-  const [image, setImage] = useState<string[]>();
-
+  const [ ankiFields, setAnkiFields ] = useRecoilState(ankiFieldsSelector);
   const [noteType, setNoteType] = useState<string>();
 
   const handleClean = () => {
-    setWord(undefined);
-    setMeaning(undefined);
-    setExample(undefined);
-    setImage(undefined);
+    setAnkiFields(ankiFields.map((field) => ({...field, value: undefined})))
   }
 
   const options = [
@@ -82,32 +79,19 @@ const AddPage: FC<IAddPageProps> = () => {
         <Select placeholder='Card type' options={options} value={noteType} onChangeValue={(newValue) => {setNoteType(newValue)}} />
         <Select placeholder='Deck' options={options} value={noteType} onChangeValue={(newValue) => {setNoteType(newValue)}} />
       </div>
-      <div css={styles.selectGroup.base}>
-        <Input.TextArea
-          sizing='large'   
-          placeholder='Word'
-          onContentChange={(nodes) => {setWord(nodes)}} 
-          contentValue={word}
-        />
-        <Input.TextArea
-          sizing='large'   
-          placeholder='Meaning'
-          onContentChange={(nodes) => {setMeaning(nodes)}} 
-          contentValue={meaning}
-        />
-        <Input.TextArea
-          sizing='large'   
-          placeholder='Example'
-          onContentChange={(nodes) => {setExample(nodes)}} 
-          contentValue={example}
-        />
-        <Input.TextArea
-          sizing='large'   
-          placeholder='Image'
-          onContentChange={(nodes) => {setImage(nodes)}} 
-          contentValue={image}
-        />
+      {ankiFields && (
+        <div css={styles.selectGroup.base}>
+        {ankiFields.map((field, i) => (
+          <Input.TextArea
+            key={field.name} 
+            sizing='large'   
+            placeholder={field.name}
+            onContentChange={(nodes) => {setAnkiFields(ankiFields.map((_field) => _field.name === field.name ? {..._field, value: nodes} : _field))}} 
+            contentValue={field.value}
+          />
+        ))}
       </div>
+      )}
       <div css={styles.buttonGroup.base}>
         <Button css={styles.button.clean} outline onClick={() => handleClean()} >Clean</Button>
         <Button css={styles.button.submit}>Add card</Button>
