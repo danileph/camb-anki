@@ -12,7 +12,7 @@ interface IOptionProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'id' |
 const styles = {
   root: {
     base: css({
-      padding: '8px 15px',
+      padding: '8px 12px',
       borderRadius: '12px',
       cursor: 'pointer',
       // '&:hover': {
@@ -21,7 +21,7 @@ const styles = {
       // }
     }),
     checked: css({
-      background: theme.palette.primary.lightest,
+      background: theme.palette.primary.darker,
       color: theme.palette.secondary.normal,
       // '&:hover': {
       //   background: theme.palette.primary.lightest,

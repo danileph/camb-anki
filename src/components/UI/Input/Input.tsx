@@ -68,13 +68,14 @@ interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement>{
   withLabel?: boolean,
   css?: {},
   sizing?: 'large' | 'medium',
+  inputClassName?: string,
 };
 
 interface IInputComposition {
   TextArea: typeof TextArea;
 }
 
-const Input: FC<IInputProps> & IInputComposition = ({ sizing = 'large', icon, placeholder = '', withLabel = true, css = {}, className, value = '', onFocus = () => {}, onBlur = () => {}, ...other }) => {
+const Input: FC<IInputProps> & IInputComposition = ({ inputClassName, sizing = 'large', icon, placeholder = '', withLabel = true, css = {}, className, value = '', onFocus = () => {}, onBlur = () => {}, ...other }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -91,6 +92,7 @@ const Input: FC<IInputProps> & IInputComposition = ({ sizing = 'large', icon, pl
       <Label isLabel={isFocused || value !== ''} placeholderOnly={!withLabel} >{placeholder}</Label>
     )}
       <input
+        className={inputClassName}
         css={[
           withLabel ? styles.inputWithLabel : styles.inputWithoutLabel,
           styles.placeholder.base,

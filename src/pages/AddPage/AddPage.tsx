@@ -10,6 +10,11 @@ import { currentTabSelector } from 'store/currentTab';
 import { ankiFieldsSelector } from 'store/ankiFields';
 import { ALL_TABS } from 'utils/tabs';
 import { theme } from 'utils/theme';
+import { useAxios } from 'hooks/useAxios';
+import { getModelNames } from 'services/anki/getModelNames';
+import { AnkiField } from 'models/AnkiField';
+import { getDeckNames } from 'services/anki/getDeckNames';
+import uniqid from 'uniqid'
 
 interface IAddPageProps {
 
@@ -62,6 +67,11 @@ const styles = {
 const AddPage: FC<IAddPageProps> = () => {
   const [ ankiFields, setAnkiFields ] = useRecoilState(ankiFieldsSelector);
   const [noteType, setNoteType] = useState<string>();
+  const [deck, setDeck] = useState<string>();
+  const [ getModelNamesQuery, { data: dataModelNames, loading: loadingModelNames, error: errorModelNames } ] = useAxios(getModelNames);
+  const [ getDeckNamesQuery, {data: dataDeckNames, loading: loadingDeckNames, error: errorDeckNames} ] = useAxios(getDeckNames);
+  const [cardTypeOptions, setCardTypeOptions] = useState<{id: string, name : string}[]>();
+  const [deckOptions, setDeckOptions] = useState<{id: string, name : string}[]>();
 
   const handleClean = () => {
     setAnkiFields(ankiFields.map((field) => ({...field, value: undefined})))
@@ -73,11 +83,57 @@ const AddPage: FC<IAddPageProps> = () => {
     {id: '3', name: 'Tree'}
   ]
 
+  const handleCardTypeOpen = () => {
+    getModelNamesQuery({});
+  }
+
+  const handleCardTypeCloze = () => {
+
+  }
+
+  const handleDeckOpen = () => {
+    getDeckNamesQuery({});
+  }
+
+  const hanldeDeckCloze = () => {
+
+  }
+
+  useEffect(() => {
+    console.log({dataModelNames})
+    // if (dataModelNames) {
+      setCardTypeOptions(dataModelNames?.map((modelName) => ({id: modelName, name: modelName})))
+    // }
+  }, [dataModelNames]);
+
+  useEffect(() => {
+    console.log({dataDeckNames})
+    // if (dataDeckNames) {
+      setDeckOptions(dataDeckNames?.map((deckName) => ({id: deckName, name: deckName})))
+    // }
+  }, [dataDeckNames])
+
   return (
     <div css={styles.root.base}>
       <div css={styles.selectGroup.base}>
-        <Select placeholder='Card type' options={options} value={noteType} onChangeValue={(newValue) => {setNoteType(newValue)}} />
-        <Select placeholder='Deck' options={options} value={noteType} onChangeValue={(newValue) => {setNoteType(newValue)}} />
+        <Select 
+          isLoading={loadingModelNames} 
+          placeholder='Card type'
+          options={cardTypeOptions} 
+          value={noteType} 
+          onChangeValue={(newValue) => {setNoteType(newValue)}}
+          onOpen={() => handleCardTypeOpen()} 
+          onCloze={() => handleCardTypeCloze()}
+        />
+        <Select 
+          isLoading={loadingDeckNames} 
+          placeholder='Deck' 
+          options={deckOptions} 
+          value={deck} 
+          onChangeValue={(newValue) => { console.log(newValue); setDeck(newValue)}}  
+          onOpen={() => handleDeckOpen()}
+          onCloze={() => hanldeDeckCloze()}
+        />
       </div>
       {ankiFields && (
         <div css={styles.selectGroup.base}>
