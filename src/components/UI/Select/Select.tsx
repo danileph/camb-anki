@@ -91,7 +91,6 @@ const Select: FC<ISelectProps> = ({
 
   useEffect(() => {
     const inputElem = document.querySelector<HTMLDivElement>(`.${inputId}`);
-    console.log(inputElem?.offsetHeight)
     if (inputElem && inputDimensions?.height === 0) {
       setInputDimensions({
         width: inputElem.offsetWidth,

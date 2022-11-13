@@ -18,32 +18,38 @@ import { Tab } from 'components/Tab';
 import { ALL_TABS } from 'utils/tabs';
 import { currentTabSelector, CURRENT_TAB } from 'store/currentTab';
 import { ankiFieldsSelector, ANKI_FIELDS } from 'store/ankiFields';
+import { currentDeckSelector, CURRENT_DECK } from 'store/currentDeck';
+import { currentNoteTypeSelector, CURRENT_NOTE_TYPE } from 'store/currentNoteType';
 
 function App() {
   const [title, setTitle] = useState('');
   const [headlines, setHeadlines] = useState<string[]>([]);
   const [currentTab, setCurrnetTab] = useRecoilState(currentTabSelector);
   const [ ankiFields, setAnkiFields ] = useRecoilState(ankiFieldsSelector);
+  const [ currentDeck, setCurrentDeck ] = useRecoilState(currentDeckSelector);
+  const [ currentNoteType, setCurrentNoteType ] = useRecoilState(currentNoteTypeSelector);
 
   useEffect(() => {
     if (chrome.storage) {
-      chrome.storage.sync.get([CURRENT_TAB, ANKI_FIELDS], (res) => {
+      chrome.storage.sync.get([CURRENT_TAB, ANKI_FIELDS, CURRENT_DECK, CURRENT_NOTE_TYPE], (res) => {
         // setCurrnetTab(res[CURRENT_TAB]);
-        console.log(JSON.parse(res[ANKI_FIELDS]));
-        setAnkiFields(JSON.parse(res[ANKI_FIELDS]));
+        console.log(res[CURRENT_DECK]);
+        if (res[ANKI_FIELDS]) setAnkiFields(JSON.parse(res[ANKI_FIELDS]));
+        setCurrentDeck(res[CURRENT_DECK]);
+        setCurrentNoteType(res[CURRENT_NOTE_TYPE]);
       })
     }
   }, [])
 
-  useEffect(() => {
-    if (ankiFields.length === 0) {
-      setAnkiFields([
-        {name: 'Word', value: undefined},
-        {name: 'Meaning', value: undefined},
-        {name: 'Example', value: undefined},
-      ])
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (ankiFields.length === 0) {
+  //     setAnkiFields([
+  //       {name: 'Word', value: undefined},
+  //       {name: 'Meaning', value: undefined},
+  //       {name: 'Example', value: undefined},
+  //     ])
+  //   }
+  // }, [])
 
   // React.useEffect(() => {
   //   /**

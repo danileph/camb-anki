@@ -1,4 +1,4 @@
 export interface AnkiField {
-  name: string | undefined,
+  name: string,
   value: string[] | undefined,
 }

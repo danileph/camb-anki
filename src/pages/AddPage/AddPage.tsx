@@ -15,6 +15,11 @@ import { getModelNames } from 'services/anki/getModelNames';
 import { AnkiField } from 'models/AnkiField';
 import { getDeckNames } from 'services/anki/getDeckNames';
 import uniqid from 'uniqid'
+import { getModelFieldNames } from 'services/anki/getModelFieldNames';
+import { addNote } from 'services/anki/addNote';
+import { PulseLoader } from 'react-spinners';
+import { currentDeckSelector } from 'store/currentDeck';
+import { currentNoteTypeSelector } from 'store/currentNoteType';
 
 interface IAddPageProps {
 
@@ -66,22 +71,20 @@ const styles = {
 
 const AddPage: FC<IAddPageProps> = () => {
   const [ ankiFields, setAnkiFields ] = useRecoilState(ankiFieldsSelector);
-  const [noteType, setNoteType] = useState<string>();
-  const [deck, setDeck] = useState<string>();
+  // const [noteType, setNoteType] = useState<string>();
+  // const [deck, setDeck] = useState<string>();
+  const [ currentDeck, setCurrentDeck ] = useRecoilState(currentDeckSelector);
+  const [ currentNoteType, setCurrentNoteType ] = useRecoilState(currentNoteTypeSelector);
   const [ getModelNamesQuery, { data: dataModelNames, loading: loadingModelNames, error: errorModelNames } ] = useAxios(getModelNames);
   const [ getDeckNamesQuery, {data: dataDeckNames, loading: loadingDeckNames, error: errorDeckNames} ] = useAxios(getDeckNames);
+  const [ getModelFieldNamesQuery, { data: dataModelFieldNames, loading: loadingModelFieldNames, error: errorModelFeildNames } ] = useAxios(getModelFieldNames);
+  const [ addNoteQuery, { data: dataAddNote, loading: loadingAddNote, error: errorAddNote } ] = useAxios(addNote);
   const [cardTypeOptions, setCardTypeOptions] = useState<{id: string, name : string}[]>();
   const [deckOptions, setDeckOptions] = useState<{id: string, name : string}[]>();
 
   const handleClean = () => {
     setAnkiFields(ankiFields.map((field) => ({...field, value: undefined})))
   }
-
-  const options = [
-    {id: '1', name: 'One'},
-    {id: '2', name: 'Two'},
-    {id: '3', name: 'Tree'}
-  ]
 
   const handleCardTypeOpen = () => {
     getModelNamesQuery({});
@@ -99,19 +102,71 @@ const AddPage: FC<IAddPageProps> = () => {
 
   }
 
+  const isAnyAnkyFieldFilled = () => {
+    const firstNotUndefinded = ankiFields.find((field) => field.value !== undefined);
+    if (firstNotUndefinded) {
+      return true
+    } else return false;
+  }
+
+  const areMandatoryFieldsFilled = () => {
+    return (
+      currentNoteType !== undefined && 
+      currentDeck !== undefined && 
+      isAnyAnkyFieldFilled()
+    )
+  }
+
+  const ankiFieldsToObj = (array: AnkiField[]) => {
+    const obj: {[P in string]: string | undefined} = {};
+    array.forEach((field) => {
+      obj[field.name] = field.value?.join('</br>');
+    })
+    return obj;
+  }
+
+  const handleAddCard = () => {
+    if (areMandatoryFieldsFilled()) {
+      addNoteQuery({note: {
+        deckName: currentDeck!,
+        modelName: currentNoteType!,
+        fields: ankiFieldsToObj(ankiFields)
+      }});
+    }
+  }
+
   useEffect(() => {
-    console.log({dataModelNames})
-    // if (dataModelNames) {
+    getModelNamesQuery({});
+    getDeckNamesQuery({});
+  }, [])
+
+  useEffect(() => {
       setCardTypeOptions(dataModelNames?.map((modelName) => ({id: modelName, name: modelName})))
-    // }
   }, [dataModelNames]);
 
   useEffect(() => {
-    console.log({dataDeckNames})
-    // if (dataDeckNames) {
       setDeckOptions(dataDeckNames?.map((deckName) => ({id: deckName, name: deckName})))
-    // }
-  }, [dataDeckNames])
+  }, [dataDeckNames]);
+
+  useEffect(() => {
+    if (currentNoteType) {
+      getModelFieldNamesQuery(currentNoteType);
+    }
+  }, [currentNoteType]);
+
+  useEffect(() => {
+    if (dataModelFieldNames) {
+      setAnkiFields(dataModelFieldNames.map((field, i) => {
+        return ({value: ankiFields[i]?.value, name: field})
+      }))
+    }
+  }, [dataModelFieldNames])
+
+  useEffect(() => {
+    if (dataAddNote && !errorAddNote) {
+      handleClean();
+    }
+  }, [dataAddNote])
 
   return (
     <div css={styles.root.base}>
@@ -120,8 +175,8 @@ const AddPage: FC<IAddPageProps> = () => {
           isLoading={loadingModelNames} 
           placeholder='Card type'
           options={cardTypeOptions} 
-          value={noteType} 
-          onChangeValue={(newValue) => {setNoteType(newValue)}}
+          value={currentNoteType} 
+          onChangeValue={(newValue) => {setCurrentNoteType(newValue)}}
           onOpen={() => handleCardTypeOpen()} 
           onCloze={() => handleCardTypeCloze()}
         />
@@ -129,8 +184,8 @@ const AddPage: FC<IAddPageProps> = () => {
           isLoading={loadingDeckNames} 
           placeholder='Deck' 
           options={deckOptions} 
-          value={deck} 
-          onChangeValue={(newValue) => { console.log(newValue); setDeck(newValue)}}  
+          value={currentDeck} 
+          onChangeValue={(newValue) => {setCurrentDeck(newValue)}}  
           onOpen={() => handleDeckOpen()}
           onCloze={() => hanldeDeckCloze()}
         />
@@ -150,7 +205,7 @@ const AddPage: FC<IAddPageProps> = () => {
       )}
       <div css={styles.buttonGroup.base}>
         <Button css={styles.button.clean} outline onClick={() => handleClean()} >Clean</Button>
-        <Button css={styles.button.submit}>Add card</Button>
+        <Button css={styles.button.submit} onClick={() => handleAddCard()}> {loadingAddNote ? <PulseLoader size="6px" color={theme.palette.secondary.normal} /> : 'Add card'}</Button>
       </div>
     </div>
   )
