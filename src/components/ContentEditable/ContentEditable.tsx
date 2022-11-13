@@ -47,7 +47,7 @@ const ContentEditable = <T extends React.ElementType = 'div',>({ contentValue, i
 
   useEffect(() => {
     setContent(`#${id}`, contentValue);
-  }, [contentValue])
+  }, [contentValue]);
 
   function handleChange(e: React.FormEvent<HTMLDivElement>) {
     const imgMaxWidth = e.currentTarget.clientWidth - 30;
@@ -57,6 +57,7 @@ const ContentEditable = <T extends React.ElementType = 'div',>({ contentValue, i
       if (img.width > imgMaxWidth)
         img.width = imgMaxWidth;
     }
+    // resizeImgs(e);
 
     let parsedNodes: string[] = [];
     const firstText = e.currentTarget.childNodes[0]?.nodeName === '#text' ? e.currentTarget.childNodes[0]?.textContent : undefined;
