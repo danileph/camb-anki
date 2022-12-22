@@ -7,6 +7,29 @@
     "default_popup": "index.html",
     "default_title": "Open the popup"
   },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+D",
+        "mac": "MacCtrl+D"
+      },
+      "description": "Open an extension popup"
+    },
+    "search": {
+      "suggested_key": {
+        "default": "Alt+Shift+S",
+        "mac": "MacCtrl+S"
+      },
+      "description": "Search selected word"
+    },
+    "add_example": {
+      "suggested_key": {
+        "default": "Alt+Shift+E",
+        "mac": "MacCtrl+E"
+      },
+      "description": "Add selected word as examlpe"
+    }
+  },
   "icons": {
     "16": "logo192.png",
     "48": "logo192.png",
@@ -14,12 +37,17 @@
   },
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "tabs",
+    "contextMenus"
   ],
   "content_scripts": [
     {
         "matches": ["http://*/*", "https://*/*"],
         "js": ["./static/js/content.js"]
     }
-  ]
+  ],
+  "background": {
+    "service_worker": "./static/js/background.js"
+  }
 }

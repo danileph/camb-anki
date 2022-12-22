@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import Typography from 'components/UI/Typography/Typography';
 import { FC, useContext } from 'react';
+import { theme } from 'utils/theme';
 import { ContextDefinition } from '../DefinitionBlock';
 
 interface IDefinitionProps  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
@@ -13,6 +14,8 @@ const styles = {
     base: css({
       fontSize: '16px',
       margin: '15px 0',
+      color: theme.palette.primary.darkest,
+      fontWeight: '700',
     })
   },
 }

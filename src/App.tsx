@@ -20,6 +20,8 @@ import { currentTabSelector, CURRENT_TAB } from 'store/currentTab';
 import { ankiFieldsSelector, ANKI_FIELDS } from 'store/ankiFields';
 import { currentDeckSelector, CURRENT_DECK } from 'store/currentDeck';
 import { currentNoteTypeSelector, CURRENT_NOTE_TYPE } from 'store/currentNoteType';
+import { sendMessageToBackground } from 'utils/helpers/sendMessageToBackground';
+import { PopupData, PopupMessage } from 'utils/helpers/sendMessageToPopup';
 
 function App() {
   const [title, setTitle] = useState('');
@@ -28,6 +30,7 @@ function App() {
   const [ ankiFields, setAnkiFields ] = useRecoilState(ankiFieldsSelector);
   const [ currentDeck, setCurrentDeck ] = useRecoilState(currentDeckSelector);
   const [ currentNoteType, setCurrentNoteType ] = useRecoilState(currentNoteTypeSelector);
+  const [ searchingWord, setSearchingWord ] = useRecoilState(searchingWordState);
 
   useEffect(() => {
     if (chrome.storage) {
@@ -38,6 +41,58 @@ function App() {
         setCurrentDeck(res[CURRENT_DECK]);
         setCurrentNoteType(res[CURRENT_NOTE_TYPE]);
       })
+    }
+  }, [])
+
+  const popupShowHandler = () => {
+    if (chrome.runtime) {
+      sendMessageToBackground('popup_opened');
+    }
+  }
+
+  useEffect(() => {
+    popupShowHandler();
+  }, [])
+
+  const chromeRuntimeHandler = async (message: {type: PopupMessage, data: PopupData | undefined}) => {
+    const { type, data } = message;
+    const searchBtn = document.querySelector<HTMLButtonElement>('.search-button');
+    console.log(searchBtn);
+
+    switch (type) {
+      case 'search_word':
+        console.log(data)
+        if (data?.selectedText) {
+          await setSearchingWord(data.selectedText);
+          searchBtn?.click();
+        }
+        break;
+
+      case 'add_as_example':
+        console.log(data)
+        if (data?.selectedText) {
+          setAnkiFields(ankiFields.map((field, i) => {
+            if (i === 2) {
+              return {name: field.name, value: data.selectedText ? [data.selectedText] : field.value}
+            } else {
+              return field
+            }
+          }))
+          
+        }
+      break;   
+
+      default:
+        break;
+    }
+  }
+
+  useEffect(() => {
+    if (chrome.runtime) {
+      chrome.runtime.onMessage.addListener(chromeRuntimeHandler)
+    }
+    return () => {
+      chrome.runtime.onMessage.removeListener(chromeRuntimeHandler)
     }
   }, [])
 

@@ -5,6 +5,7 @@ import { useRecoilState } from 'recoil';
 import { searchErrorState } from 'store/searchError';
 import { wordDataState } from 'store/wordData';
 import { theme } from 'utils/theme';
+import {useIsFirstRender} from "usehooks-ts";
 
 interface IMainProps extends React.HTMLAttributes<HTMLDivElement> {
 
@@ -17,8 +18,9 @@ const styles = {
     borderRadius: '0 0 8px 8px',
     overflowY: 'auto',
   }),
-  setHeight: (height: number) => css({
-    maxHeight: height - 90 - 1,
+  setHeight: (height: number, isFirstRender: boolean) => css({
+    height: isFirstRender ? '600px': undefined,
+    maxHeight: !isFirstRender ? height - 90 - 1 : undefined,
   })
 }
 
@@ -26,17 +28,15 @@ const Main: FC<IMainProps> = ({ children, ...other }) => {
   const [windowHeight, setWindowHeight] = useState(600);
   const [wordData] = useRecoilState(wordDataState);
   const [searchError] = useRecoilState(searchErrorState);
+  const isFirstRender = useIsFirstRender();
 
   useEffect(() => {
-    console.log(window.innerHeight)
-    if (wordData !== undefined || searchError !== undefined) {
-      setWindowHeight(window.innerHeight);
-    }
-  }, [wordData, searchError])
+    setWindowHeight(window.innerHeight);
+  }, [])
 
   return (
     <main
-      css={[styles.base, styles.setHeight(windowHeight)]}
+      css={[styles.base, styles.setHeight(windowHeight, isFirstRender)]}
       {...other}
     >
       {children}

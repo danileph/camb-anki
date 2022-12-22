@@ -14,7 +14,7 @@ interface IExampleProps extends Omit< React.HTMLAttributes<HTMLDivElement>, 'chi
 const styles = {
   root: {
     base: css({
-      fontSize: '12px',
+      fontSize: '13px',
       fontStyle: 'italic',
       margin: 0,
       paddingLeft: '0px',
@@ -33,7 +33,7 @@ const styles = {
           backgroundImage: `url(${checkboxUnchecked})`,
           backgroundSize: '100%',
         },
-        marginBottom: '8px',
+        marginBottom: '12px',
         ':last-child': {
           marginBottom: 0
         }
