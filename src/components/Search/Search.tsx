@@ -9,7 +9,10 @@ import React, { FC, useEffect, useLayoutEffect, useState } from "react";
 import { PulseLoader } from "react-spinners";
 import { useRecoilState } from "recoil";
 import { searchWord } from "services/cambParser";
-import { SearchWordType } from "services/cambParser/searchWord";
+import {
+  SearchWordReqType,
+  SearchWordResType,
+} from "services/cambParser/searchWord";
 import { isSearchingState } from "store/isSearching";
 import { searchErrorState } from "store/searchError";
 import { searchingWordState } from "store/searchingWord";
@@ -20,6 +23,8 @@ import { useDebounce, useIsFirstRender } from "usehooks-ts";
 import Autocomplete from "./Autocomplete";
 import { AutocompleteSearchType } from "../../models/AutocompleteSearchType";
 import { log } from "util";
+import { wordSuggestionsState } from "../../store/wordSuggestions";
+import { searchTriggerState } from "../../store/searchTrigger";
 
 interface ISearchProps extends React.HTMLAttributes<HTMLElement> {
   small?: boolean;
@@ -61,19 +66,28 @@ const styles = {
 const Search: FC<ISearchProps> = ({ small = false, ...other }) => {
   const [buttonWidth, setButtonWidth] = useState(0);
   const [searchWordRequest, { data, loading, error }] = useAxios<
-    SearchWordType,
-    WordType[]
+    SearchWordReqType,
+    SearchWordResType
   >(searchWord);
   const [searchingWord, setSearchingWord] = useRecoilState(searchingWordState);
   const searchWordDebounced = useDebounce<string>(searchingWord, 200);
   const [suggestedWord, setSuggestedWord] = useState("");
   const [wordData, setWordData] = useRecoilState(wordDataState);
+  const [wordSuggestions, setWordSuggestions] =
+    useRecoilState(wordSuggestionsState);
   const [isSearching, setIsSearching] = useRecoilState(isSearchingState);
   const [searchError, setSearchError] = useRecoilState(searchErrorState);
   const [suggestions, setSuggestions] = useState<AutocompleteSearchType[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSuggestedWordClicked, setIsSuggestedWordClicked] = useState(false);
   const isFirstRender = useIsFirstRender();
+  const [autocompleteStatus, setAutocompleteStatus] = useState<
+    "fetching" | "fetched" | "stopped"
+  >("stopped");
+  const [autocompleteResult, setAutocompleteResult] = useState<
+    AutocompleteSearchType[]
+  >([]);
+  const [searchTrigger, setSearchTrigger] = useRecoilState(searchTriggerState);
 
   useLayoutEffect(() => {
     const searchButton =
@@ -91,9 +105,16 @@ const Search: FC<ISearchProps> = ({ small = false, ...other }) => {
   // }, []);
 
   useEffect(() => {
-    if (data) {
+    if (data?.wordData) {
       setSearchError(undefined);
-      setWordData(data);
+      setWordSuggestions(undefined);
+      setWordData(data.wordData);
+      const main = document.querySelector("main");
+      main?.scrollTo(0, 0);
+    } else if (data?.wordSuggestions) {
+      setSearchError(undefined);
+      setWordData(undefined);
+      setWordSuggestions(data.wordSuggestions);
       const main = document.querySelector("main");
       main?.scrollTo(0, 0);
     }
@@ -113,12 +134,27 @@ const Search: FC<ISearchProps> = ({ small = false, ...other }) => {
   useEffect(() => {
     (async () => {
       if (searchingWord !== "") {
+        setAutocompleteStatus("fetching");
         const result = await autocompleteSearch({ query: searchWordDebounced });
-        setSuggestions(result);
-        if (result[0].word === searchingWord) setSuggestedWord(result[0].word);
+        setAutocompleteResult(result);
+        setAutocompleteStatus("fetched");
       }
     })();
   }, [searchWordDebounced]);
+
+  useEffect(() => {
+    if (autocompleteStatus === "fetched") {
+      setSuggestions(autocompleteResult);
+      console.log(suggestions);
+      console.log(searchingWord);
+      if (
+        autocompleteResult.length !== 0 &&
+        autocompleteResult[0].word === searchingWord
+      ) {
+        setSuggestedWord(autocompleteResult[0].word);
+      }
+    }
+  }, [autocompleteStatus]);
 
   useEffect(() => {
     if (searchWordDebounced === "") setSuggestions([]);
@@ -129,6 +165,12 @@ const Search: FC<ISearchProps> = ({ small = false, ...other }) => {
       searchHandler();
     }
   }, [isSuggestedWordClicked]);
+
+  useEffect(() => {
+    if (!isFirstRender) {
+      searchHandler();
+    }
+  }, [searchTrigger]);
 
   const searchHandler = () => {
     // setSuggestions([]);
@@ -145,6 +187,7 @@ const Search: FC<ISearchProps> = ({ small = false, ...other }) => {
   };
 
   const inputHandler = async (e: React.FormEvent<HTMLInputElement>) => {
+    setAutocompleteStatus("stopped");
     setSuggestions([]);
     setSearchingWord(e.currentTarget.value.toLowerCase());
     setSuggestedWord("");

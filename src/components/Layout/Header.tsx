@@ -85,7 +85,7 @@ const Header: FC<IHeaderProps> = ({ scrollTop, ...other }) => {
       <Titles
         css={[
           isCompacted && styles.titlesPre,
-          isExtraCompacted && currentTab === "search" && styles.titles,
+          // isExtraCompacted && currentTab === "search" && styles.titles,
         ]}
       />
       {/*{isExtraCompacted && currentTab === 'search' && <Search small css={[styles.search]} />}*/}
