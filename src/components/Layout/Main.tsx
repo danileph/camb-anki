@@ -1,28 +1,26 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import { FC, Ref, useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
-import { searchErrorState } from 'store/searchError';
-import { wordDataState } from 'store/wordData';
-import { theme } from 'utils/theme';
-import {useIsFirstRender} from "usehooks-ts";
+import { css } from "@emotion/react";
+import { FC, Ref, useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
+import { searchErrorState } from "store/searchError";
+import { wordDataState } from "store/wordData";
+import { theme } from "utils/theme";
+import { useIsFirstRender } from "usehooks-ts";
 
-interface IMainProps extends React.HTMLAttributes<HTMLDivElement> {
-
-};
+interface IMainProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const styles = {
   base: css({
     background: theme.palette.secondary.normal,
-    padding: '110px 25px 40px 25px',
-    borderRadius: '0 0 8px 8px',
-    overflowY: 'auto',
+    padding: "110px 25px 40px 25px",
+    overflowY: "auto",
   }),
-  setHeight: (height: number, isFirstRender: boolean) => css({
-    height: isFirstRender ? '600px': undefined,
-    maxHeight: !isFirstRender ? height - 90 - 1 : undefined,
-  })
-}
+  setHeight: (height: number, isFirstRender: boolean) =>
+    css({
+      height: isFirstRender ? "600px" : undefined,
+      maxHeight: !isFirstRender ? height - 90 - 1 : undefined,
+    }),
+};
 
 const Main: FC<IMainProps> = ({ children, ...other }) => {
   const [windowHeight, setWindowHeight] = useState(600);
@@ -32,7 +30,7 @@ const Main: FC<IMainProps> = ({ children, ...other }) => {
 
   useEffect(() => {
     setWindowHeight(window.innerHeight);
-  }, [])
+  }, []);
 
   return (
     <main
@@ -41,7 +39,7 @@ const Main: FC<IMainProps> = ({ children, ...other }) => {
     >
       {children}
     </main>
-  )
+  );
 };
 
 export default Main;

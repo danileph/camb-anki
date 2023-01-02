@@ -267,7 +267,9 @@ const Search: FC<ISearchProps> = ({ small = false, ...other }) => {
         </Button>
       </Space>
       <Autocomplete
-        suggestionAbsolute={wordData !== undefined}
+        suggestionAbsolute={
+          wordData !== undefined || wordSuggestions !== undefined
+        }
         isShown={showSuggestions}
         onChange={(suggestedWord, isClicked) => {
           setSuggestedWord(suggestedWord);
