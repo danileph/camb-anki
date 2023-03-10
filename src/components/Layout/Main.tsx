@@ -18,7 +18,7 @@ const styles = {
   setHeight: (height: number, isFirstRender: boolean) =>
     css({
       height: isFirstRender ? "600px" : undefined,
-      maxHeight: !isFirstRender ? height - 90 - 1 : undefined,
+      maxHeight: !isFirstRender ? height - 70 : undefined,
     }),
 };
 

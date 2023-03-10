@@ -19,7 +19,7 @@ const styles = {
       // }
     }),
     checked: css({
-      background: theme.palette.primary.darker,
+      background: theme.palette.primary.normal,
       color: theme.palette.secondary.normal,
       // '&:hover': {
       //   background: theme.palette.primary.lightest,

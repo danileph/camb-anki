@@ -23,20 +23,20 @@ const Logo: FC<ILogoProps> = ({ shrincted = false, ...other }) => {
       height: "100px",
       // width: "80px",
       // height: "80px",
-      background: theme.palette.primary.normal,
+      // background: theme.palette.primary.normal,
       borderRadius: "100%",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
       position: "absolute",
-      top: "calc(90px/2 - 5px)",
+      top: "calc(60px/2 - 5px)",
       transition: theme.transition,
       "> div": {
-        width: "75px",
-        height: "75px",
+        width: "80px",
+        height: "80px",
         // width: "60px",
         // height: "60px",
-        background: theme.palette.secondary.normal,
+        // background: theme.palette.secondary.normal,
         borderRadius: "100%",
         display: "flex",
         justifyContent: "center",
@@ -77,6 +77,7 @@ const Logo: FC<ILogoProps> = ({ shrincted = false, ...other }) => {
       "& > *": {
         marginTop: "5px",
         transition: theme.transition,
+        // width: "45px",
       },
     }),
     spinner: css({
@@ -93,14 +94,14 @@ const Logo: FC<ILogoProps> = ({ shrincted = false, ...other }) => {
     <div css={[styles.base]} {...other}>
       <div css={styles.imgWrap}>
         <LogoIcon />
-        {isSearching && (
-          <div css={styles.spinner}>
-            <BounceLoader
-              color={theme.palette.primary.darkest}
-              size={shrincted ? "50px" : "75px"}
-            />
-          </div>
-        )}
+        {/*{isSearching && (*/}
+        {/*  <div css={styles.spinner}>*/}
+        {/*    <BounceLoader*/}
+        {/*      color={theme.palette.primary.darkest}*/}
+        {/*      size={shrincted ? "50px" : "80px"}*/}
+        {/*    />*/}
+        {/*  </div>*/}
+        {/*)}*/}
       </div>
     </div>
   );

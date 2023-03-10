@@ -38,7 +38,7 @@ const SearchPage: FC<ISearchPageProps> = () => {
                 <WordBlock.DefinitionBlock
                   useCase={useCase.content}
                   level={definition.lvl}
-                  word={word.word}
+                  currentWord={word}
                 >
                   <WordBlock.DefinitionBlock.Definition>
                     {definition.content}

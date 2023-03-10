@@ -12,6 +12,8 @@ import Logo from "./Logo";
 import Titles from "./Titles";
 import { useProgressiveImage } from "../../hooks/useProgressiveImage";
 import snowflakes from "assets/christmas/snowflakes.png";
+import { BarLoader } from "react-spinners";
+import { isSearchingState } from "../../store/isSearching";
 
 interface IHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   scrollTop?: number;
@@ -22,10 +24,11 @@ const Header: FC<IHeaderProps> = ({ scrollTop, ...other }) => {
   const isCompacted = scrollTop !== undefined && scrollTop > 24;
   const isExtraCompacted = scrollTop !== undefined && scrollTop > 155;
   const snowflakesImg = useProgressiveImage(snowflakes);
+  const [isSearching] = useRecoilState(isSearchingState);
 
   const styles = {
     base: css({
-      height: "90px",
+      height: "70px",
       background: theme.palette.primary.darkest,
       padding: "10px 25px",
       position: "relative",
@@ -43,7 +46,7 @@ const Header: FC<IHeaderProps> = ({ scrollTop, ...other }) => {
         top: 0,
         bottom: 0,
         position: "absolute",
-        backgroundImage: `url(${snowflakesImg})`,
+        // backgroundImage: `url(${snowflakesImg})`,
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
@@ -67,10 +70,11 @@ const Header: FC<IHeaderProps> = ({ scrollTop, ...other }) => {
     titlesPre: css({
       position: "static",
       flexGrow: 1,
-      marginLeft: "80px",
-      marginBottom: "15px",
+      marginLeft: "70px",
+      marginBottom: "12px",
       "& > h1": {
         color: theme.palette.secondary.normal,
+        fontSize: "26px",
       },
       "& > p": {
         display: "none",
@@ -79,12 +83,12 @@ const Header: FC<IHeaderProps> = ({ scrollTop, ...other }) => {
     logo: css({
       width: 65,
       height: 65,
-      top: 13,
+      top: 0,
       "& > div": {
         width: 50,
         height: 50,
         "& > *": {
-          width: 28,
+          width: 40,
         },
       },
     }),
@@ -103,10 +107,25 @@ const Header: FC<IHeaderProps> = ({ scrollTop, ...other }) => {
       display: "none",
       transition: theme.transition,
     }),
+    spinner: css({
+      position: "absolute",
+      top: 0,
+      left: 0,
+      marginTop: "0px",
+    }),
   };
 
   return (
     <header css={[styles.base, isCompacted && styles.compacted]} {...other}>
+      {
+        <div css={styles.spinner}>
+          <BarLoader
+            width={"400px"}
+            color={theme.palette.primary.lightest}
+            loading={isSearching}
+          />
+        </div>
+      }
       <div style={{ zIndex: "2" }}>
         <Logo css={[isCompacted && styles.logo]} shrincted={isCompacted} />
         <Titles

@@ -1,20 +1,18 @@
 /** @jsxImportSource @emotion/react */
+import { FC, HTMLAttributes } from "react";
 import { css } from "@emotion/react";
-import { FC } from "react";
-import { theme } from "utils/theme";
+import { theme } from "../../utils/theme";
 
-interface IOptionProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "id" | "children"> {
-  id: string;
-  children: string;
-  isChecked?: boolean;
+interface IOptionProps extends HTMLAttributes<HTMLElement> {
+  isSelected?: boolean;
 }
 
 const styles = {
   root: {
     base: css({
-      padding: "8px 12px",
-      borderRadius: "12px",
+      fontSize: "10px",
+      padding: "6px 10px",
+      borderRadius: "8px",
       cursor: "pointer",
       // '&:hover': {
       //   background: theme.palette.primary.lighter,
@@ -33,15 +31,14 @@ const styles = {
 };
 
 const Option: FC<IOptionProps> = ({
-  isChecked = false,
-  id,
   children,
+  isSelected = false,
   ...other
 }) => {
   return (
     <div
-      css={[styles.root.base, isChecked && styles.root.checked]}
-      id={id}
+      css={[styles.root.base, isSelected && styles.root.checked]}
+      className={"field-connecter-option"}
       {...other}
     >
       {children}

@@ -9,7 +9,7 @@ interface ITitlesProps extends React.HTMLAttributes<HTMLDivElement> {}
 const styles = {
   base: css({
     position: "absolute",
-    top: "85px",
+    top: "75px",
     marginLeft: "120px",
     transition: theme.transition,
   }),
@@ -21,7 +21,7 @@ const Titles: FC<ITitlesProps> = ({ ...other }) => {
       <Typography
         css={{ marginTop: "2px", color: theme.palette.secondary.darker }}
       >
-        Keep it simple
+        Two in one
       </Typography>
     </div>
   );

@@ -14,7 +14,7 @@ import { Input } from "../Input";
 import Option from "./Option";
 import uniqid from "uniqid";
 
-interface OptionType {
+export interface OptionType {
   id: string;
   name: string;
 }
@@ -25,7 +25,7 @@ interface ISelectProps extends React.HTMLAttributes<HTMLDivElement> {
   placeholder?: string;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
   isLoading?: boolean;
-
+  withLabel?: boolean;
   onChangeValue?: (newValue: string | undefined) => void;
   onOpen?: () => void;
   onCloze?: () => void;
@@ -46,7 +46,7 @@ const styles = {
       background: theme.palette.primary.lightest,
       borderRadius: "0 0 12px 12px",
       fontSize: "14px",
-      marginTop: "4px",
+      marginTop: "3px",
       boxShadow: "0px 5px 4px 3px rgba(34, 60, 80, 0.2)",
       width: "100%",
       outline: `2px solid ${theme.palette.primary.lightest}`,
@@ -85,6 +85,7 @@ const Select: FC<ISelectProps> = ({
   onOpen = () => {},
   onCloze = () => {},
   inputProps,
+  withLabel = true,
   ...other
 }) => {
   const inputId = uniqid("select-input-");
@@ -170,6 +171,7 @@ const Select: FC<ISelectProps> = ({
           css={isOpened && styles.input.focus}
           placeholder={placeholder}
           value={getNameById(value)}
+          withLabel={withLabel}
           onClick={(e) => e.preventDefault()}
           {...inputProps}
         />

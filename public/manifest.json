@@ -1,6 +1,6 @@
 {
-  "name": "Hello Extensions",
-  "description": "Base Level Extension",
+  "name": "CambAnki",
+  "description": "Add words from Cambridge Dictionary to your Anki!",
   "version": "1.0",
   "manifest_version": 3,
   "action": {
